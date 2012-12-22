@@ -1,4 +1,4 @@
-![""](http://ryanuber.github.com/veneer/logo.png "")
+![""](http://ryanuber.github.com/veneer/vener.png "")
 
 ### Create a file named "hello.php" with the following contents :
 
