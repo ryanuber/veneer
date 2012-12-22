@@ -319,8 +319,6 @@ You can build a binary .rpm package for RHEL systems by doing the following:
     tar czf veneer.tar.gz veneer/
     rpmbuild -tb veneer.tar.gz
 
-You will get an installable RPM dropped into your RPM buildroot.
-
 Coding Standards
 ----------------
 
