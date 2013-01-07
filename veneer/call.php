@@ -169,7 +169,12 @@ abstract class call
      */
     private function validate($data, $params)
     {
-        $paramdata = is_array($data['parameters']) ? $data['parameters'] : array();
+        if (is_array($data)) {
+            if (array_key_exists('parameters', $data)) {
+                is_array($data['parameters']) && $paramdata = $data['parameters'];
+            }
+        }
+        isset($paramdata) || $paramdata = array();
         $invalid = array();
         foreach ($paramdata as $key => $val) {
             if (array_key_exists($key, $params)) {

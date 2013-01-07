@@ -98,7 +98,7 @@ class json implements
      */
     public static function headers()
     {
-        return array('Content-Type: application/json; charset=utf-8');
+        return array('Content-Type: application/json');
     }
 }
 

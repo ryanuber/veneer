@@ -60,7 +60,7 @@ class html implements
      */
     public static function headers()
     {
-        return array('Content-Type: text/html; charset=utf-8');
+        return array('Content-Type: text/html');
     }
 }
 
