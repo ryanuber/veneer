@@ -202,12 +202,7 @@ class util
             foreach ($endpoints as $endpoint) {
                 $class = sprintf('\veneer\endpoint\%s\%s', $endpoint, self::version('class', $version));
                 $instance = new $class;
-                $docs[$endpoint][$version] = array(
-                    'get' => $instance->get,
-                    'post' => $instance->post,
-                    'put' => $instance->put,
-                    'delete' => $instance->delete
-                );
+                $docs[$endpoint][$version] = $instance->retrieve_detail();
             }
         }
         return $docs;
