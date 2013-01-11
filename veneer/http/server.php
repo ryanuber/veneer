@@ -337,7 +337,7 @@ class server
         $_SERVER['REQUEST_METHOD'] = $request['method'];
         $_SERVER['REQUEST_URI'] = $request['uri'];
         $_SERVER['SERVER_PROTOCOL'] = $request['protocol'];
-        $_SERVER['HTTP_HOST'] = $request['http_host'];
+        $_SERVER['HTTP_HOST'] = $request['http_host'].':'.$request['server_port'];
         $_SERVER['SERVER_PORT'] = $request['server_port'];
         $_SERVER['REMOTE_ADDR'] = $request['remote_addr'];
         $_SERVER['REMOTE_PORT'] = $request['remote_port'];
