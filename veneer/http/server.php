@@ -288,6 +288,7 @@ class server
                 }
             }
 
+            socket_getpeername($client, $request['remote_addr'], $request['remote_port']);
             self::set_environment($request);
 
             /**
@@ -335,6 +336,8 @@ class server
         $_SERVER['REQUEST_METHOD'] = $request['method'];
         $_SERVER['REQUEST_URI'] = $request['uri'];
         $_SERVER['SERVER_PROTOCOL'] = $request['protocol'];
+        $_SERVER['REMOTE_ADDR'] = $request['remote_addr'];
+        $_SERVER['REMOTE_PORT'] = $request['remote_port'];
         return true;
     }
 
@@ -350,7 +353,12 @@ class server
     public function reset()
     {
         global $_SERVER;
-        foreach (array('REQUEST_METHOD', 'REQUEST_URI', 'SERVER_PROTOCOL') as $index) {
+        foreach (array(
+            'REQUEST_METHOD',
+            'REQUEST_URI',
+            'SERVER_PROTOCOL',
+            'REMOTE_ADDR',
+            'REMOTE_PORT') as $index) {
             if (array_key_exists($index, $_SERVER)) {
                 unset($_SERVER[$index]);
             }
