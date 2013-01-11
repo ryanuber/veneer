@@ -288,6 +288,7 @@ class server
                 }
             }
 
+            socket_getsockname($client, $request['http_host'], $request['server_port']);
             socket_getpeername($client, $request['remote_addr'], $request['remote_port']);
             self::set_environment($request);
 
@@ -336,6 +337,8 @@ class server
         $_SERVER['REQUEST_METHOD'] = $request['method'];
         $_SERVER['REQUEST_URI'] = $request['uri'];
         $_SERVER['SERVER_PROTOCOL'] = $request['protocol'];
+        $_SERVER['HTTP_HOST'] = $request['http_host'];
+        $_SERVER['SERVER_PORT'] = $request['server_port'];
         $_SERVER['REMOTE_ADDR'] = $request['remote_addr'];
         $_SERVER['REMOTE_PORT'] = $request['remote_port'];
         return true;
@@ -357,6 +360,8 @@ class server
             'REQUEST_METHOD',
             'REQUEST_URI',
             'SERVER_PROTOCOL',
+            'HTTP_HOST',
+            'SERVER_PORT',
             'REMOTE_ADDR',
             'REMOTE_PORT') as $index) {
             if (array_key_exists($index, $_SERVER)) {
