@@ -2,6 +2,7 @@
 
 ### Create a file named "hello.php" with the following contents :
 
+    <?php
     namespace veneer\endpoint\hello;
     class v1 extends \veneer\call
     {
@@ -11,6 +12,7 @@
             return $this->response->set("Hello, {$args['name']}!", 200);
         }
     }
+    ?>
 
 ### Run the following command :
 
@@ -83,6 +85,7 @@ This framework provides two easy mechanisms for validating requests and input, a
 it in a way that unifies documentation and test. The following is a slightly more
 complicated version of the hello world endpoint from above.
 
+    <?php
     namespace veneer\endpoint\hello;
     class v1 extends \veneer\call
     {
@@ -112,6 +115,7 @@ complicated version of the hello world endpoint from above.
             return $value != 'How are you';
         }
     }
+    ?>
 
 The above example creates a required GET parameter with key 'greeting' and a value
 that matches `^[\w\s]+$`, and returns true when passed through the `validate_greeting`
