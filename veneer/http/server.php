@@ -294,7 +294,14 @@ class server
 
             ob_start();
             \veneer\app::run();
-            socket_write($client, ob_get_clean());
+            $response = ob_get_clean();
+            socket_write($client, $response);
+
+            $status = preg_replace('~^[^\s]+\s~', '', array_shift(explode("\n", $response)));
+
+            self::debug("[{$_SERVER['REMOTE_ADDR']}] ".
+                "{$_SERVER['REQUEST_METHOD']} ".
+                "{$_SERVER['REQUEST_URI']} - {$status}");
 
             /**
              * Close the socket and add the master server socket back into the pool. The
