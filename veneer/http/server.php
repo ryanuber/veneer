@@ -292,15 +292,6 @@ class server
             socket_getpeername($client, $request['remote_addr'], $request['remote_port']);
             self::set_environment($request);
 
-            /**
-             * Don't do anything for requests for favicon.ico
-             */
-            if ($_SERVER['REQUEST_URI'] == 'favicon.ico') {
-                socket_close($client);
-                $r = array($this->socket);
-                continue;
-            }
-
             ob_start();
             \veneer\app::run();
             socket_write($client, ob_get_clean());

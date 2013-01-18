@@ -73,10 +73,10 @@ class app
                 $response->send($endpoint_name, $endpoint_version);
             } else {
                 $return = array(
-                    'error' => 'Requested endpoint is not implemented',
+                    'error' => 'No such endpoint',
                     'endpoints' => \veneer\util::get_endpoints()
                 );
-                $response->set($return, 501);
+                $response->set($return, 404);
                 $response->send();
             }
         } catch (\Exception $e) {
