@@ -27,7 +27,7 @@
     {
       "endpoint":"hello",
       "version":"v1",
-      "code":200,
+      "status":200,
       "response":"Hello, world!"
     }
 
@@ -237,7 +237,7 @@ You can invoke any API endpoint with any encoding type by specifying it in the A
 method name of the request, for instance:
 
     $ curl -s http://localhost:8080/v1/hello.serialize/world
-    a:4:{s:8:"endpoint";s:5:"hello";s:7:"version";s:2:"v1";s:4:"code";i:200;s:8:"response";s:13:"Hello, world!";}
+    a:4:{s:8:"endpoint";s:5:"hello";s:7:"version";s:2:"v1";s:4:"status";i:200;s:8:"response";s:13:"Hello, world!";}
     $ curl -s http://localhost:8080/v1/hello.raw/world
     Hello, world!
 
@@ -269,7 +269,7 @@ output once more:
     {
       "endpoint":"hello",
       "version":"v1",
-      "code":200,
+      "status":200,
       "response":"Hello, world!"
     }
 
