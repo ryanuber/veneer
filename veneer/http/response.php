@@ -53,9 +53,9 @@ namespace veneer\http;
 class response
 {
     /**
-     * @var integer  The HTTP code to send in the response
+     * @var integer  The HTTP status to send in the response
      */
-    private $code;
+    private $status;
 
     /**
      * @var mixed  The response body, can be either text or an array.
@@ -68,7 +68,7 @@ class response
     private $encoding;
 
     /**
-     * @var bool  Display additional response information such as response code
+     * @var bool  Display additional response information such as response status
      */
     private $response_detail = true;
 
@@ -117,14 +117,14 @@ class response
      * Setter function for the response body
      *
      * @param mixed $body  String, integer, or array containing the response body
-     * @param integer $code  The HTTP response code
+     * @param integer $status  The HTTP response status
      * @return bool
      */
-    public function set($body='', $code=500)
+    public function set($body='', $status=500)
     {
         $this->response_set = true;
         $this->set_body($body);
-        $this->set_code($code);
+        $this->set_status($status);
     }
 
     /**
@@ -140,18 +140,18 @@ class response
     }
 
     /**
-     * Setter function for just the HTTP response code
+     * Setter function for just the HTTP response status
      *
-     * @param integer $code  The HTTP response code
+     * @param integer $status  The HTTP response status
      * @return bool
      */
-    public function set_code($code=500)
+    public function set_status($status=500)
     {
-        if (!is_int($code)) {
+        if (!is_int($status)) {
             return false;
         }
         $this->response_set = true;
-        return $this->code = $code;
+        return $this->status = $status;
     }
 
     /**
@@ -188,7 +188,7 @@ class response
             $response['endpoint'] = $endpoint_name;
             $response['version']  = \veneer\util::version('number', $endpoint_version);
         }
-        $response['code'] = $this->code;
+        $response['status'] = $this->status;
         $response['response'] = $this->body;
         self::set_body($response);
     }
@@ -204,13 +204,13 @@ class response
     }
 
     /**
-     * Getter function for the HTTP response code
+     * Getter function for the HTTP response status
      *
      * @return integer
      */
-    public function get_code()
+    public function get_status()
     {
-        return $this->code;
+        return $this->status;
     }
 
     /**
@@ -247,7 +247,7 @@ class response
      * is_set - Check if the response has been set or not.
      *
      * Certain parts of the API framework need to determine whether or not a
-     * response has already been set. Rather than checking the code and body
+     * response has already been set. Rather than checking the status and body
      * individually, check this boolean value instead.
      *
      * @return bool
@@ -325,7 +325,7 @@ class response
             $output = $this->body;
         }
 
-        self::http_status($this->code);
+        self::http_status($this->status);
 
         foreach (self::get_headers() as $header) {
             if (!$this->send_raw_headers) {
@@ -351,7 +351,7 @@ class response
     }
 
     /** 
-     * http_status - Set HTTP response code
+     * http_status - Set HTTP response status
      *
      * Function to provide short-hand access to setting HTTP status codes. These are
      * important to the REST API because clients will check HTTP status to determine
