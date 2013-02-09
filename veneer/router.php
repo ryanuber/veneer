@@ -81,7 +81,7 @@ class router
         $request = explode('/', $method);
         foreach ($this->routes as $route) {
             list($http_method, $route, $data) = $route;
-            $route = trim($route, '/');
+            $route = str_replace('*', '(.*)', trim($route, '/');
             $params = array();
             $count = 0;
             foreach (explode('/', $route) as $part) {

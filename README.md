@@ -284,6 +284,51 @@ this response detail on a per-route basis like so:
         'function' => 'hello'
     );
 
+Route Splats
+------------
+
+Currently route splats are supported in a limited form. The most common use for route
+splats seems to be emulating a "default", or "fallback" class method, just in case
+the user's query does not match one of the routes you have defined for them. Typically,
+when you make a request to an endpoint for a route it does not know about, you would
+see something similar to the following:
+
+    {
+      "endpoint": "hello",
+      "version": "v1",
+      "status": 500,
+      "response": "Incomplete response data returned by endpoint"
+    }
+
+While this might be good enough for some, others will want to write out their own
+custom message, examine query parameters, etc. You can do this today in the veneer
+framework, simply by using the '*' character in your route definitions. An example,
+keeping in mind that routes are evaluated in the order they are defined, might look
+like the following:
+
+    public $get = array(
+        '/:name' => 'hello',
+        '*' => 'helpme'
+    );
+
+    public function hello($args)
+    {
+        return $this->response->set("Hello, {$args['name']}!", 200);
+    }
+
+    public function helpme($args)
+    {
+        return $this->response->set('You have to tell me who to say hello to...', 400);
+    }
+
+The above example code would only respond successfully if you have included a name
+in your query as the first route element. If I make any other query, I will be
+served a help message and a 400 status code to let me know what I did wrong.
+
+You of course are not limited to only using route splats as a way of implementing
+fallback methods. You can stick an asterisk (*) anywhere in your route and they
+should otherwise perform exactly the same as a standard route.
+
 Stand-Alone Socket Server
 -------------------------
 
