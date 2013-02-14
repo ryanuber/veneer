@@ -232,6 +232,11 @@ changed to an array so that we can specify both the function to call and the def
 encoding to use for the endpoint. If the default encoding type is invalid, and no other
 encoding types were specified during the query, an error will be thrown.
 
+You can also override the default encoding handler by setting the class-scope variable:
+
+    \veneer\http\response::$default_encoding = 'xml';
+    \veneer\app::run();
+
 Also included out-of-the-box is the php 'serialize' type, and a raw outputter.
 You can invoke any API endpoint with any encoding type by specifying it in the API
 method name of the request, for instance:

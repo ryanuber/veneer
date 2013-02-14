@@ -88,6 +88,11 @@ class response
     private $response_set;
 
     /**
+     * @var string  The default encoding method name
+     */
+    public static $default_encoding = 'json';
+
+    /**
      * This function appends to a local array instance of headers. Before appending,
      * it will iterate over all previously set headers to check if they define an
      * identical parameter. If a duplicate is found, the previous header is unset,
@@ -285,7 +290,7 @@ class response
          * before API class invocation), then try the query parameters. Default to JSON.
          */
         if (!isset($this->encoding) || $this->encoding == '') {
-            self::set_encoding('json');
+            self::set_encoding(self::$default_encoding);
         }
 
         $class = '\veneer\encoding\\'.$this->encoding;
