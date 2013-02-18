@@ -97,6 +97,11 @@ class app
                 $instance->invoke('/'.implode('/', $path), &$response);
                 $response->send($endpoint_name, $endpoint_version);
             } else {
+                foreach (\veneer\util::request_params() as $name => $value) {
+                    if ($name == self::get_default('encoding_param')) {
+                        $response->set_encoding($value);
+                    }
+                }
                 $return = array(
                     'error' => 'No such endpoint',
                     'endpoints' => \veneer\util::get_endpoints()
