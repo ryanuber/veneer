@@ -98,6 +98,16 @@ abstract class call
         $data = null;
         $params = array();
         $router->select_route($method, &$data, &$params);
+        if (is_array($data) && array_key_exists('encoding_param', $data)) {
+            $encoding_param = $data['encoding_param'];
+        } else {
+            $encoding_param = \veneer\app::get_default('encoding_param');
+        }
+        foreach (\veneer\util::request_params() as $name => $value) {
+            if ($name == $encoding_param) {
+                $this->response->set_encoding($value);
+            }
+        }
         if (is_array($data) && array_key_exists('default_encoding', $data)) {
             if ($this->response->get_encoding() == null) {
                 $this->response->set_encoding($data['default_encoding']);
@@ -106,6 +116,7 @@ abstract class call
         if (is_array($data) && array_key_exists('response_detail', $data)) {
             $this->response->show_detail($data['response_detail']);
         }
+                
         $params = array_merge(\veneer\util::request_params(), $params);
         if ($fn = self::validate($data, $params)) {
             if (method_exists($this, $fn)) {

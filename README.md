@@ -40,8 +40,7 @@ doesn't focus on complex routing, appealing syntax, or making the 'hello world'
 example as small as possible, but some basic features include
 
 * Mandatory versioning
-* Route matching
-* Route parameters
+* Route matching, patterns, and splats
 * Modular output encoding layer
 * Input validation
 
@@ -125,27 +124,27 @@ some results like the following:
 
 Fails because `greeting` is missing
 
-    $ curl -s localhost:8080/v1/hello.raw/world
+    $ curl -s localhost:8080/v1/hello/world
     Required parameter "greeting" missing
 
 Fails because `validate_greeting` returns false
 
-    $ curl -s localhost:8080/v1/hello.raw/world?greeting=How%20are%20you
+    $ curl -s localhost:8080/v1/hello/world?greeting=How%20are%20you
     Invalid value(s) for: greeting
 
 Fails because `@` does not match `\w`
 
-    $ curl -s localhost:8080/v1/hello.raw/world?greeting=myself@mydomain.com
+    $ curl -s localhost:8080/v1/hello/world?greeting=myself@mydomain.com
     Invalid value(s) for: greeting
 
 Fails because the `:name` parameter (from the route) doesn't match `^[a-z]+$`
 
-    $ curl -s http://localhost:8080/v1/hello.raw/random%20person
+    $ curl -s http://localhost:8080/v1/hello/random%20person
     Invalid value(s) for: name
 
 Succeeds
 
-    $ curl -s localhost:8080/v1/hello.raw/world?greeting=Pleased%20to%20meet%20you
+    $ curl -s localhost:8080/v1/hello/world?greeting=Pleased%20to%20meet%20you
     Hello, world! Pleased to meet you
 
 This makes API endpoint code much more declarative, and keeps the functional code
@@ -232,19 +231,36 @@ changed to an array so that we can specify both the function to call and the def
 encoding to use for the endpoint. If the default encoding type is invalid, and no other
 encoding types were specified during the query, an error will be thrown.
 
-You can also override the default encoding handler by setting the class-scope variable:
+You can also override the default encoding handler by setting it before calling run()
+or listen():
 
-    \veneer\http\response::$default_encoding = 'xml';
+    \veneer\app::set_default('encoding', 'xml');
     \veneer\app::run();
 
-Also included out-of-the-box is the php 'serialize' type, and a raw outputter.
+Also included out-of-the-box is the php 'serialize' type, and a raw outputter. Originally,
+XML was also included, but due to the varying ways in which PHP can be compiled, and the
+fundamental differences between XML and other encoding languages, the built-in
+implementation has been removed in favor of simplicity.
+
 You can invoke any API endpoint with any encoding type by specifying it in the API
 method name of the request, for instance:
 
-    $ curl -s http://localhost:8080/v1/hello.serialize/world
+    $ curl -s http://localhost:8080/v1/hello/world?format=serialize
     a:4:{s:8:"endpoint";s:5:"hello";s:7:"version";s:2:"v1";s:4:"status";i:200;s:8:"response";s:13:"Hello, world!";}
-    $ curl -s http://localhost:8080/v1/hello.raw/world
+    $ curl -s http://localhost:8080/v1/hello/world?format=raw
     Hello, world!
+
+Don't like using the query parameter "format"? No problem! You can change the default
+parameter name which indicates the encoding mechanism, and you can also specify it on a per-
+route basis. In best practice, you would never use a different query parameter in different
+API endpoints to specify the encoding type, but veneer does not prevent you from doing that.
+
+The following will change the default parameter name to "output_type":
+
+    \veneer\app::set_default('encoding_param', 'output_type');
+    \veneer\app::run();
+
+You can specify the same inside of your route definitions.
 
 There are constraints around encoding, specifically what types of data can be handled. There
 are 2 main types that any outputter might support: string and array. Any encoder that can

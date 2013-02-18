@@ -83,16 +83,6 @@ class response
     private $response_set;
 
     /**
-     * @var string  The default encoding method name
-     */
-    public static $default_encoding = 'json';
-
-    /**
-     * @var bool  Display additional response information such as response status
-     */
-    public static $response_detail = true;
-
-    /**
      * This function appends to a local array instance of headers. Before appending,
      * it will iterate over all previously set headers to check if they define an
      * identical parameter. If a duplicate is found, the previous header is unset,
@@ -290,13 +280,13 @@ class response
          * before API class invocation), then try the query parameters.
          */
         if (!isset($this->encoding) || $this->encoding == '') {
-            self::set_encoding(self::$default_encoding);
+            self::set_encoding(\veneer\app::get_default('encoding'));
         }
 
         $class = '\veneer\encoding\\'.$this->encoding;
         if (class_exists($class) && in_array('veneer\prototype\encoding', class_implements($class))) {
             if (in_array('veneer\prototype\encoding_array', class_implements($class))) {
-                self::$response_detail && $this->add_detail($endpoint_name, $endpoint_version);
+                \veneer\app::get_default('response_detail') && $this->add_detail($endpoint_name, $endpoint_version);
             }
             if (is_string($this->body) || is_int($this->body)) {
                 if (in_array('veneer\prototype\encoding_string', class_implements($class))) {

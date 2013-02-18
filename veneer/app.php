@@ -43,6 +43,38 @@ namespace veneer;
 class app
 {
     /**
+     * @var array  A simple data structure to hold various default settings
+     */
+    private static $defaults = array(
+        'encoding' => 'json',
+        'encoding_param' => 'format',
+        'response_detail' => true
+    );
+
+    /**
+     * Set a default configuration value
+     *
+     * @param string $name  The name of the configuration parameter
+     * @param string $value  The value of the configuration parameter
+     * @return bool
+     */
+    public static function set_default($name, $value)
+    {
+        self::$defaults[$name] = $value;
+    }
+
+    /**
+     * Retrieve the default value of a configuration parameter
+     *
+     * @param string $name  The name of the configuration parameter
+     * @return mixed
+     */
+    public static function get_default($name)
+    {
+        return self::$defaults[$name];
+    }
+
+    /**
      * Runs through defined API routines once. This call should be executed
      * once per request.
      *
@@ -56,13 +88,6 @@ class app
             $path = \veneer\util::request_path();
             $endpoint_version = array_shift($path);
             $endpoint_name    = array_shift($path);
-
-            $parts = explode('.', $endpoint_name);
-            if (count($parts) == 2) {
-                $encoding = array_pop($parts);
-                $endpoint_name = implode('.', $parts);
-                $response->set_encoding($encoding);
-            }
 
             $endpoint_version = \veneer\util::version('class', $endpoint_version);
             $class = sprintf('\veneer\endpoint\%s\%s', $endpoint_name, $endpoint_version);
