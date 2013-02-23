@@ -307,7 +307,7 @@ this response detail on a per-route basis like so:
 
 You can also set the default behavior:
 
-    \veneer\http\response::$response_detail = false;
+    \veneer\app::set_default('response_detail', false);
     \veneer\app::run();
 
 Keep in mind, you can set the default to false and turn response detail on at a per-route
