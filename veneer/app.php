@@ -47,8 +47,7 @@ class app
      */
     private static $defaults = array(
         'encoding' => 'json',
-        'encoding_param' => 'format',
-        'response_detail' => true
+        'encoding_param' => 'format'
     );
 
     /**
