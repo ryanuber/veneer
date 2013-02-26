@@ -31,35 +31,34 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\encoding;
+namespace veneer\output\handler;
 
 /**
- * Returns raw data, completely unencoded. This is useful for things that
- * return data in proprietary or otherwise unimplemented formats.
+ * Returns the response data as HTML by sending the appropriate headers.
+ * This outputter is a near-identical copy of the plain outputter with
+ * the only real difference being the MIME type sent in the response.
  */
-class raw implements
-    \veneer\prototype\encoding,
-    \veneer\prototype\encoding_string
+class html implements \veneer\output\str
 {
     /**
-     * Encode string data
+     * Output string data
      *
-     * @param mixed $data  String or array data to encode
+     * @param mixed $data  String or array data to output
      * @return string
      */
-    public static function encode_string($data)
+    public static function output_str($data)
     {
         return (string)$data;
     }
 
     /**
-     * Sets headers associated with this encoding type
+     * Sets headers associated with this output type
      *
      * @return array
      */
     public static function headers()
     {
-        return array('Content-Type: text/plain');
+        return array('Content-Type: text/html');
     }
 }
 

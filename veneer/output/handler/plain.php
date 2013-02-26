@@ -31,20 +31,34 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\prototype;
+namespace veneer\output\handler;
 
 /**
- * Providers for array data encoding must implement this interface
+ * Returns plain text data. This is useful for things that return data
+ * in proprietary or otherwise unimplemented formats.
  */
-interface encoding_array
+class plain implements \veneer\output\str
 {
     /**
-     * Encode array data
+     * Output string data
+     *
+     * @param string $data  String data to output
+     * @return string
+     */
+    public static function output_str($data)
+    {
+        return (string)$data;
+    }
+
+    /**
+     * Sets headers associated with this output type
      *
      * @return array
      */
-    public static function encode_array($data);
+    public static function headers()
+    {
+        return array('Content-Type: text/plain');
+    }
 }
 
-/* EOF */
 ?>

@@ -31,16 +31,15 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\encoding;
+namespace veneer\output\handler;
 
 /**
- * Provides JSON data encoding. Indents data so that humans can easily
+ * Provides JSON serialized output. Indents data so that humans can easily
  * read data for debugging purposes.
  */
 class json implements
-    \veneer\prototype\encoding,
-    \veneer\prototype\encoding_array,
-    \veneer\prototype\encoding_string
+    \veneer\output\arr,
+    \veneer\output\str
 {
     /**
      * jsonpp - Pretty print JSON data
@@ -72,21 +71,23 @@ class json implements
     }
 
     /**
-     * Encode string data
+     * Output string data
      *
+     * @param string $data  The data to output
      * @return array
      */
-    public static function encode_string($data)
+    public static function output_str($data)
     {
         return self::jsonpp(json_encode($data));
     }
 
     /**
-     * Encode array data
+     * Output array data
      *
+     * @param array $data  The data to output
      * @return array
      */
-    public static function encode_array($data)
+    public static function output_arr(array $data)
     {
         return self::jsonpp(json_encode($data));
     }

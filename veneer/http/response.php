@@ -38,9 +38,9 @@ namespace veneer\http;
  *
  * This class abstracts sending a response to the client. Flow control becomes
  * very difficult when different headers are set at different times by different
- * plugins, encoders, appenders, etc. Printing output becomes an obstacle if you
- * have no way of knowing if the headers were already sent, if you have already
- * printed a response, etc.
+ * plugins, output handlers, appenders, etc. Printing output becomes an obstacle
+ * if you have no way of knowing if the headers were already sent, if you have
+ * already printed a response, etc.
  *
  * Previously the way this was handled in this framework was, a response would
  * be sent, and immediately after, a call was made to either die() or exit().
@@ -63,9 +63,9 @@ class response
     private $body;
 
     /**
-     * @var string  The encoding mechanism to use. An encoder by this name must be installed.
+     * @var string  The output handler to use. An output handler by this name must be installed.
      */
-    private $encoding;
+    private $output_handler;
 
     /**
      * @var bool  A true/false value indicating whether or not to send raw headers.
@@ -150,14 +150,14 @@ class response
     }
 
     /**
-     * Setter function for the response encoding handler
+     * Setter function for the response output handler
      *
-     * @param string $encoding  Name of the encoder to use
+     * @param string $output_handler  Name of the output_handler to use
      * @return bool
      */
-    public function set_encoding($encoding)
+    public function set_output_handler($output_handler)
     {
-        return $this->encoding = is_null($encoding) ? null : strtolower($encoding);
+        return $this->output_handler = is_null($output_handler) ? null : strtolower($output_handler);
     }
 
     /**
@@ -201,13 +201,13 @@ class response
     }
 
     /**
-     * Getter function for the encoding type
+     * Getter function for the output handler
      *
      * @return string
      */
-    public function get_encoding()
+    public function get_output_handler()
     {
-        return $this->encoding;
+        return $this->output_handler;
     }
 
     /**
@@ -248,44 +248,44 @@ class response
         self::set_header('Cache-Control: no-cache');
 
         /**
-         * If no encoding was set by the calling API (usually if a response was set
-         * before API class invocation), then try the query parameters.
+         * If no output handler was set by the calling API (usually if a response
+         * was set before API class invocation), then try the query parameters.
          */
-        if (!isset($this->encoding) || $this->encoding == '') {
-            self::set_encoding(\veneer\app::get_default('encoding'));
+        if (!isset($this->output_handler) || $this->output_handler == '') {
+            self::set_output_handler(\veneer\app::get_default('output_handler'));
         }
 
-        $class = '\veneer\encoding\\'.$this->encoding;
-        if (class_exists($class) && in_array('veneer\prototype\encoding', class_implements($class))) {
+        $class = '\veneer\output\handler\\'.$this->output_handler;
+        if (class_exists($class) && in_array('veneer\output', class_implements($class))) {
             if (is_string($this->body) || is_int($this->body)) {
-                if (in_array('veneer\prototype\encoding_string', class_implements($class))) {
-                    $output = $class::encode_string($this->body);
+                if (in_array('veneer\output\str', class_implements($class))) {
+                    $output = $class::output_str($this->body);
                 } else {
-                    self::set('Encoder "'.$this->encoding.'" cannot handle string data', 500);
-                    self::set_encoding(null);
+                    self::set('Output handler "'.$this->output_handler.'" cannot handle string data', 500);
+                    self::set_output_handler(null);
                 }
             } else {
-                if (in_array('veneer\prototype\encoding_array', class_implements($class))) {
-                    $output = $class::encode_array($this->body);
+                if (in_array('veneer\output\arr', class_implements($class))) {
+                    $output = $class::output_arr($this->body);
                 } else {
-                    self::set('Encoder "'.$this->encoding.'" cannot handle array data', 500);
-                    self::set_encoding(null);
+                    self::set('Output handler "'.$this->output_handler.'" cannot handle array data', 500);
+                    self::set_output_handler(null);
                 }
             }
 
-            if (is_null(self::get_encoding())) {
+            if (is_null(self::get_output_handler())) {
                 $output = $this->body;
             }
 
             /**
-             * Different encoders probably have different MIME types, and if implemented
+             * Different output handlers probably have different MIME types, and if implemented
              * correctly, this call should set those headers for this request.
              */
             foreach ($class::headers() as $header) {
                 self::set_header($header);
             }
         } else {
-            self::set('FATAL: No encoders found for "'.$this->encoding.'"', 500);
+            self::set('FATAL: No output handlers found for "'.$this->output_handler.'"', 500);
             $output = $this->body;
         }
 

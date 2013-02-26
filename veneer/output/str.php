@@ -31,37 +31,21 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\encoding;
+namespace veneer\output;
 
 /**
- * Returns the response data as HTML by sending the appropriate headers.
- * This outputter is a near-identical copy of the raw outputter with the
- * only real difference being the MIME type sent in the response.
+ * Providers for string data must implement this interface
  */
-class html implements
-    \veneer\prototype\encoding,
-    \veneer\prototype\encoding_string
+interface str extends \veneer\output
 {
     /**
-     * Encode string data
+     * Output string data
      *
-     * @param mixed $data  String or array data to encode
+     * @param string $data  The string data to output
      * @return string
      */
-    public static function encode_string($data)
-    {
-        return (string)$data;
-    }
-
-    /**
-     * Sets headers associated with this encoding type
-     *
-     * @return array
-     */
-    public static function headers()
-    {
-        return array('Content-Type: text/html');
-    }
+    public static function output_str($data);
 }
 
+/* EOF */
 ?>

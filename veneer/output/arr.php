@@ -31,19 +31,20 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\prototype;
+namespace veneer\output;
 
 /**
- * Providers for array data encoding must implement this interface
+ * Providers for array data serialization must implement this interface
  */
-interface encoding_string
+interface arr extends \veneer\output
 {
     /**
-     * Encode string data
+     * Encode array data
      *
-     * @return array
+     * @param array $data  Array data to serialize
+     * @return string
      */
-    public static function encode_string($data);
+    public static function output_arr(array $data);
 }
 
 /* EOF */

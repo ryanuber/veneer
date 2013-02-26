@@ -38,7 +38,7 @@ namespace veneer;
  *
  * Main application class to call to begin executing the veneer framework.
  * A call to any of these class methods should be the last statement in
- * your PHP code, because the run() method will send encoded output.
+ * your PHP code, because the run() method will send output.
  */
 class app
 {
@@ -46,9 +46,8 @@ class app
      * @var array  A simple data structure to hold various default settings
      */
     private static $defaults = array(
-        'encoding' => 'json',
-        'encoding_param' => 'format',
-        'response_detail' => true
+        'output_handler' => 'json',
+        'output_handler_param' => 'format'
     );
 
     /**
@@ -98,8 +97,8 @@ class app
                 $response->send($endpoint_name, $endpoint_version);
             } else {
                 foreach (\veneer\util::request_params() as $name => $value) {
-                    if ($name == self::get_default('encoding_param')) {
-                        $response->set_encoding($value);
+                    if ($name == self::get_default('output_handler_param')) {
+                        $response->set_output_handler($value);
                     }
                 }
                 $return = array(

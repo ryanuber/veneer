@@ -40,9 +40,10 @@ namespace veneer;
  * include this file, then begin using veneer.
  */
 require_once 'util.php';
-\veneer\util::include_dir('prototype');
 \veneer\util::include_dir('exception');
-\veneer\util::include_dir('encoding');
+require_once 'output.php';
+\veneer\util::include_dir('output');
+\veneer\util::include_dir(\veneer\util::path_join('output', 'handler'));
 require_once \veneer\util::path_join('http', 'response.php');
 require_once 'call.php';
 require_once 'app.php';

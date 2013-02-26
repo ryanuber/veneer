@@ -31,44 +31,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\encoding;
+namespace veneer\exception;
 
 /**
- * Provides PHP-serialized data. This would only be useful for remote PHP
- * applications consuming these API's. The benefit is that there is no need
- * for the JSON library. This class is here more to demonstrate the
- * the simplicity with wich one could implement an encoding method.
+ * This exception is thrown by various output handlers
  */
-class serialize implements
-    \veneer\prototype\encoding,
-    \veneer\prototype\encoding_string,
-    \veneer\prototype\encoding_array
+class output extends \Exception
 {
-    /**
-     * Encode string data
-     *
-     * @param mixed $data  String data to encode
-     * @return string
-     */
-    public static function encode_string($data)
-    {
-        return serialize($data);
-    }
-
-    public static function encode_array($data)
-    {
-        return serialize($data);
-    }
-
-    /**
-     * Sets headers associated with this encoding type
-     *
-     * @return array
-     */
-    public static function headers()
-    {
-        return array('Content-Type: text/plain');
-    }
 }
 
 ?>

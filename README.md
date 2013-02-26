@@ -44,7 +44,7 @@ example as small as possible, but some basic features include
 
 * Mandatory versioning
 * Route matching, patterns, and splats
-* Modular output encoding layer
+* Modular output handler layer
 * Input validation
 
 It also includes a stand-alone HTTP server implemented using sockets. It is not
@@ -216,70 +216,69 @@ However, it makes an attempt to make it easy for developers to convey easily exa
 what they intended their endpoints to do, and what their options are for how to make
 calls to it.
 
-Encoding
---------
+Handling Output
+---------------
 
-The data encoding layer in this framework is pluggable. By default, it uses the widely-
+The output handler layer in this framework is pluggable. By default, it uses the widely-
 accepted JSON encoding type. This default is settable on a per-route basis. Using the
 simplistic 'hello world' example from above, you could make a small modification to
-alter the default encoding used by the `/:name` route by doing the following:
+alter the default output handler used by the `/:name` route by doing the following:
 
     public $get = array('/:name' => array(
-        'default_encoding' => 'serialize',
+        'output_handler' => 'serialize',
         'function' => 'hello'
     );
 
 Notice that instead of the most basic 'route' => 'function_name' syntax, the value is
 changed to an array so that we can specify both the function to call and the default
-encoding to use for the endpoint. If the default encoding type is invalid, and no other
-encoding types were specified during the query, an error will be thrown.
+output handler to use for the endpoint. If the default output handler is invalid, and
+no other output handlers were specified during the query, an error will be thrown.
 
-You can also override the default encoding handler by setting it before calling run()
+You can also override the default output handler by setting it before calling run()
 or listen():
 
-    \veneer\app::set_default('encoding', 'xml');
+    \veneer\app::set_default('output_handler', 'serialize');
     \veneer\app::run();
 
-Also included out-of-the-box is the php 'serialize' type, and a raw outputter. Originally,
-XML was also included, but due to the varying ways in which PHP can be compiled, and the
-fundamental differences between XML and other encoding languages, the built-in
-implementation has been removed in favor of simplicity.
+Also included out-of-the-box is the php 'serialize' type, and a plain text outputter.
+Originally, XML was also included, but due to the varying ways in which PHP can be
+compiled, and the fundamental differences between XML and other serializers,
+the built-in implementation has been removed in favor of simplicity.
 
-You can invoke any API endpoint with any encoding type by specifying it in the API
-method name of the request, for instance:
+You can invoke any API endpoint with any output handler by specifying it in the query
+parameters of the request, for instance:
 
     $ curl -s http://localhost:8080/v1/hello/world?format=serialize
     a:4:{s:8:"endpoint";s:5:"hello";s:7:"version";s:2:"v1";s:4:"status";i:200;s:8:"response";s:13:"Hello, world!";}
-    $ curl -s http://localhost:8080/v1/hello/world?format=raw
+    $ curl -s http://localhost:8080/v1/hello/world?format=plain
     Hello, world!
 
 Don't like using the query parameter "format"? No problem! You can change the default
-parameter name which indicates the encoding mechanism, and you can also specify it on a per-
+parameter name which indicates the output mechanism, and you can also specify it on a per-
 route basis. In best practice, you would never use a different query parameter in different
-API endpoints to specify the encoding type, but veneer does not prevent you from doing that.
+API endpoints to specify the output handler, but veneer does not prevent you from doing that.
 
 The following will change the default parameter name to "output_type":
 
-    \veneer\app::set_default('encoding_param', 'output_type');
+    \veneer\app::set_default('output_handler_param', 'output_type');
     \veneer\app::run();
 
 You can specify the same inside of your route definitions.
 
-There are constraints around encoding, specifically what types of data can be handled. There
-are 2 main types that any outputter might support: string and array. Any encoder that can
+There are constraints around output handlers, specifically what types of data can be handled.
+There are 2 main types that any outputter might support: string and array. Any handler that can
 handle array and string data would satisfy both of these. However, there might be some
-encoding types that cannot (for whatever reason) handle one or the other. An example is the
-raw outputter - it can handle dumping a raw string or integer, but it does not know how to
-dump an array in raw format. These constraints are settable on a per-encoder basis within the
-encoding class by implementing the appropriate interfaces, encoding_string for string
-encoders, and encoding_array for array encoders. As an example, the json outputter would look
-something like the following:
+output handlers that cannot (for whatever reason) handle one or the other. An example is the
+plain outputter - it can handle dumping a raw string or integer, but it does not know how to
+dump an array in raw format. These constraints are settable on a per-handler basis within the
+handler class by implementing the appropriate interfaces, \veneer\output\str for string
+handlers, and \veneer\output\arr for array handlers. As an example, the json outputter would
+look something like the following:
 
-    namespace veneer\encoding;
+    namespace veneer\output\handler;
     class json implements
-        \veneer\prototype\encoding,
-        \veneer\prototype\encoding_array,
-        \veneer\prototype\encoding_string
+        \veneer\output\arr,
+        \veneer\output\str
     {
         ...
 
@@ -292,12 +291,7 @@ the user's query does not match one of the routes you have defined for them. Typ
 when you make a request to an endpoint for a route it does not know about, you would
 see something similar to the following:
 
-    {
-      "endpoint": "hello",
-      "version": "v1",
-      "status": 500,
-      "response": "Incomplete response data returned by endpoint"
-    }
+    Incomplete response data returned by endpoint
 
 While this might be good enough for some, others will want to write out their own
 custom message, examine query parameters, etc. You can do this today in the veneer

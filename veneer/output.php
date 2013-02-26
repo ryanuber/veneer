@@ -31,13 +31,21 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\exception;
+namespace veneer;
 
 /**
- * This exception is thrown by various encoders
+ * Provides some insurance that any extending outputters will implement
+ * ouptut and header settings in a consistent way.
  */
-class encoding extends \Exception
+interface output
 {
+    /**
+     * Return an array of headers to set for this output type
+     *
+     * @return array
+     */
+    public static function headers();
 }
 
+/* EOF */
 ?>

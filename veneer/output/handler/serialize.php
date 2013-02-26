@@ -31,21 +31,49 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace veneer\prototype;
+namespace veneer\output\handler;
 
 /**
- * Provides some insurance that any extending encoders will implement
- * encoding and header settings in a consistent way.
+ * Provides PHP-serialized data. This would only be useful for remote PHP
+ * applications consuming these API's. The benefit is that there is no need
+ * for the JSON library. This class is here more to demonstrate the
+ * the simplicity with wich one could implement an output method.
  */
-interface encoding
+class serialize implements
+    \veneer\output\str,
+    \veneer\output\arr
 {
     /**
-     * Return an array of headers to set for this encoding type
+     * Output string data
+     *
+     * @param string $data  String data to output
+     * @return string
+     */
+    public static function output_str($data)
+    {
+        return serialize($data);
+    }
+
+    /**
+     * Output array data
+     *
+     * @param array $data  Array data to output
+     * @return string
+     */
+    public static function output_arr(array $data)
+    {
+        return serialize($data);
+    }
+
+    /**
+     * Sets headers associated with this output type
      *
      * @return array
      */
-    public static function headers();
+    public static function headers()
+    {
+        return array('Content-Type: text/plain');
+    }
 }
 
-/* EOF */
 ?>
