@@ -161,34 +161,6 @@ class response
     }
 
     /**
-     * Enable or disable detailed responses
-     *
-     * @param bool $value  True/false for enabled/disabled, respectively.
-     * @return bool
-     */
-    public function show_detail($value)
-    {
-        return self::$response_detail = (bool)$value;
-    }
-
-    /**
-     * Add response detail to the response body
-     *
-     * @return bool
-     */
-    public function add_detail($endpoint_name='', $endpoint_version='')
-    {
-        $response = array();
-        if ($endpoint_name != '' && $endpoint_version != '') {
-            $response['endpoint'] = $endpoint_name;
-            $response['version']  = \veneer\util::version('number', $endpoint_version);
-        }
-        $response['status'] = $this->status;
-        $response['response'] = $this->body;
-        self::set_body($response);
-    }
-
-    /**
      * Getter function for the response body
      *
      * @return mixed  String, integer, or array
@@ -285,9 +257,6 @@ class response
 
         $class = '\veneer\encoding\\'.$this->encoding;
         if (class_exists($class) && in_array('veneer\prototype\encoding', class_implements($class))) {
-            if (in_array('veneer\prototype\encoding_array', class_implements($class))) {
-                \veneer\app::get_default('response_detail') && $this->add_detail($endpoint_name, $endpoint_version);
-            }
             if (is_string($this->body) || is_int($this->body)) {
                 if (in_array('veneer\prototype\encoding_string', class_implements($class))) {
                     $output = $class::encode_string($this->body);

@@ -113,10 +113,6 @@ abstract class call
                 $this->response->set_encoding($data['default_encoding']);
             }
         }
-        if (is_array($data) && array_key_exists('response_detail', $data)) {
-            $this->response->show_detail($data['response_detail']);
-        }
-                
         $params = array_merge(\veneer\util::request_params(), $params);
         if ($fn = self::validate($data, $params)) {
             if (method_exists($this, $fn)) {
@@ -126,7 +122,6 @@ abstract class call
 
         if (!$this->response->is_set()) {
             if ($request_method == 'options') {
-                $this->response->show_detail(false);
                 $this->response->set($this->retrieve_detail(), 200);
             } else {
                 $this->response->set('Incomplete response data returned by endpoint', 500);
