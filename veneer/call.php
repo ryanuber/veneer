@@ -77,7 +77,7 @@ abstract class call
      * @param \veneer\http\response $response  Response object
      * @return bool
      */
-    public function invoke($method, \veneer\http\response $response)
+    public function invoke($method, \veneer\http\response &$response)
     {
         $method = trim($method, '/');
         $request = explode('/', $method);

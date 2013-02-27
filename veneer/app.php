@@ -93,7 +93,7 @@ class app
 
             if (class_exists($class)) {
                 $instance = new $class;
-                $instance->invoke('/'.implode('/', $path), &$response);
+                $instance->invoke('/'.implode('/', $path), $response);
                 $response->send($endpoint_name, $endpoint_version);
             } else {
                 foreach (\veneer\util::request_params() as $name => $value) {
