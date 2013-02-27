@@ -1,5 +1,7 @@
 ![""](http://ryanuber.github.com/veneer/veneer.png "")
 
+[![Build Status](https://travis-ci.org/ryanuber/veneer.png)](https://travis-ci.org/ryanuber/veneer)
+
 ### Create a file named "hello.php" with the following contents :
 
     <?php
