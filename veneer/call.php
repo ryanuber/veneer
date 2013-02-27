@@ -97,7 +97,7 @@ abstract class call
 
         $data = null;
         $params = array();
-        $router->select_route($method, &$data, &$params);
+        $router->select_route($method, $data, $params);
         if (is_array($data) && array_key_exists('output_handler_param', $data)) {
             $output_handler_param = $data['output_handler_param'];
         } else {

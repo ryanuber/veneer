@@ -75,7 +75,7 @@ class router
      * @param array $callback_params  Parsed query parameters to pass in
      * @return bool  true on route match, false on no matches
      */
-    public function select_route($requested, $callback_data, $callback_params)
+    public function select_route($requested, &$callback_data, &$callback_params)
     {
         $method = trim($requested, '/');
         $request = explode('/', $method);
