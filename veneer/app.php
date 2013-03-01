@@ -59,7 +59,7 @@ class app
      */
     public static function set_default($name, $value)
     {
-        return self::$defaults[$name] = $value ? true : false;
+        return (self::$defaults[$name] = $value) ? true : false;
     }
 
     /**
