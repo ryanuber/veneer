@@ -158,7 +158,7 @@ class util
      * @param string $in  The endpoint class name or version number
      * @return mixed  String on success, false on error
      */
-    public function version($format, $in)
+    public static function version($format, $in)
     {
         if ($format == 'number') {
             return str_replace('_', '.', $in);
