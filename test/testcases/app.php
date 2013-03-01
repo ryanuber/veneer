@@ -27,10 +27,8 @@ class test_veneer_app extends PHPUnit_Framework_TestCase
 
     public function test_listen()
     {
-        $mock = $this->getMock('\veneer\app', array('listen'));
-        $mock->expects($this->once())->method('listen')->with($this->equalTo('0.0.0.0'), $this->equalTo(8080));
-        $subject = new Subject;
-        $subject->attach($mock);
-        $subject::listen();
+        $mock_app = $this->getMock('\veneer\app', array('listen'));
+        $mock_app->expects($this->once())->method('listen')->with($this->equalTo('0.0.0.0'), $this->equalTo(8080));
+        $mock_app::listen();
     }
 }
