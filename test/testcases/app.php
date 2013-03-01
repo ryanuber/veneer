@@ -7,6 +7,11 @@ class test_veneer_app extends PHPUnit_Framework_TestCase
         $this->assertEquals('some_handler', \veneer\app::get_default('output_handler'));
     }
 
+    public function test_get_nonexistent_default()
+    {
+        $this->assertEquals(null, \veneer\app::get_default('oogabooga'));
+    }
+
     public function test_run()
     {
         $result = true;

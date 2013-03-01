@@ -59,7 +59,7 @@ class app
      */
     public static function set_default($name, $value)
     {
-        self::$defaults[$name] = $value;
+        return self::$defaults[$name] = $value ? true : false;
     }
 
     /**
@@ -70,7 +70,7 @@ class app
      */
     public static function get_default($name)
     {
-        return self::$defaults[$name];
+        return array_key_exists($name, self::$defaults) ? self::$defaults[$name] : null;
     }
 
     /**
