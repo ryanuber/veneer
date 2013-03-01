@@ -131,6 +131,9 @@ class util
     public static function request_params($param=null)
     {
         $result = array();
+        if (!array_key_exists('REQUEST_METHOD', $_SERVER)) {
+            return $result;
+        }
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 $result = $_GET;
