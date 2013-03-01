@@ -1,5 +1,5 @@
 <?php
-class test_json_output extends PHPUnit_Framework_TestCase
+class test_output_handler_json extends PHPUnit_Framework_TestCase
 {
     public function test_json_pretty_print()
     {

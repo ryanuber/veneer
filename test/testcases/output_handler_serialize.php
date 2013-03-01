@@ -1,5 +1,5 @@
 <?php
-class test_serialize_output extends PHPUnit_Framework_TestCase
+class test_output_handler_serialize extends PHPUnit_Framework_TestCase
 {
     public function test_serialize_output_array()
     {
