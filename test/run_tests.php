@@ -5,3 +5,4 @@ include 'testcases/output_handler_plain.php';
 include 'testcases/output_handler_html.php';
 include 'testcases/app.php';
 include 'testcases/util.php';
+include 'testcases/call.php';
