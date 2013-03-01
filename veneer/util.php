@@ -114,7 +114,7 @@ class util
     public static function request_path($trim=false)
     {
         $result = array();
-        $request = $_SERVER['REQUEST_URI'];
+        $request = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : null;
         strpos($request, '?') === false || $request = substr($request, 0, strpos($request, '?'));
         foreach (explode('/', $request) as $i) {
             $i != '' && $result[] = $i;
