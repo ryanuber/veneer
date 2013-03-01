@@ -83,7 +83,7 @@ abstract class call
         $request = explode('/', $method);
         $this->response = &$response;
         $router = new \veneer\router;
-        $request_method = strtolower($_SERVER['REQUEST_METHOD']);
+        $request_method = array_key_exists('REQUEST_METHOD', $_SERVER) ? strtolower($_SERVER['REQUEST_METHOD']) : 'get';
 
         foreach (array('get', 'post', 'put', 'delete') as $http_method) {
             if ($http_method == $request_method) {

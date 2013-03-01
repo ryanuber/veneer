@@ -9,7 +9,7 @@ class test_call extends PHPUnit_Framework_TestCase
         $response->set_output_handler('plain');
         $call->invoke('/my/route', $response);
 
-        $this->assertEquals('This is the response', $response->getBody());
-        $this->assertEquals(200, $response->getStatus());
+        $this->assertEquals('This is the response', $response->get_body());
+        $this->assertEquals(200, $response->get_status());
     }
 }
