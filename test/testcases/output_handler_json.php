@@ -42,7 +42,7 @@ EOF;
         );
     }
 
-    public function test_json_encode_and_pretty_print()
+    public function test_json_encode_array()
     {
         $json_pretty_mixed_data = <<<EOF
 {
@@ -71,6 +71,14 @@ EOF;
         $this->assertEquals(
             $json_pretty_mixed_data,
             \veneer\output\handler\json::output_arr($json_array)
+        );
+    }
+
+    public function test_json_encode_string()
+    {
+        $this->assertEquals(
+            '"This is a string"',
+            \veneer\output\handler\json::output_str('This is a string')
         );
     }
 
