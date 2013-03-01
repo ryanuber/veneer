@@ -3,8 +3,8 @@ class test_veneer_app extends PHPUnit_Framework_TestCase
 {
     public function test_defaults_set_and_get()
     {
-        $this->assertTrue(\veneer\app::set_default('output_handler', 'some_handler'));
-        $this->assertEquals('some_handler', \veneer\app::get_default('output_handler'));
+        $this->assertTrue(\veneer\app::set_default('mysetting', 'myvalue'));
+        $this->assertEquals('myvalue', \veneer\app::get_default('mysetting'));
     }
 
     public function test_get_nonexistent_default()
@@ -16,7 +16,9 @@ class test_veneer_app extends PHPUnit_Framework_TestCase
     {
         $result = true;
         try {
+            ob_start();
             \veneer\app::run();
+            $output = ob_get_clean();
         } catch (\Exception $e) {
             $result = false;
         }
