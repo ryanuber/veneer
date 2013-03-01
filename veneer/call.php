@@ -69,6 +69,22 @@ abstract class call
     public $delete = array();
 
     /**
+     * @var array  Request parameters passed in this call
+     */
+    protected $request_params = array();
+
+    /**
+     * Set the request parameter data
+     *
+     * @param array $request_params  The request parameters
+     * @return bool
+     */
+    public function set_request_params($request_params)
+    {
+        return ($this->request_params = $request_params) ? true : false;
+    }
+
+    /**
      * Discover route matches and invoke any corresponding methods found.
      * Handles route parsing and route parameters using some simple
      * regular expression pattern matching and function calling.
@@ -103,7 +119,7 @@ abstract class call
         } else {
             $output_handler_param = \veneer\app::get_default('output_handler_param');
         }
-        foreach (\veneer\util::request_params() as $name => $value) {
+        foreach ($this->request_params as $name => $value) {
             if ($name == $output_handler_param) {
                 $this->response->set_output_handler($value);
             }
@@ -113,7 +129,7 @@ abstract class call
                 $this->response->set_output_handler($data['output_handler']);
             }
         }
-        $params = array_merge(\veneer\util::request_params(), $params);
+        $params = array_merge($this->request_params, $params);
         if ($fn = self::validate($data, $params)) {
             if (method_exists($this, $fn)) {
                 call_user_func(array($this, $fn), $params);

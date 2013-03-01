@@ -87,16 +87,18 @@ class app
             $path = \veneer\util::request_path();
             $endpoint_version = array_shift($path);
             $endpoint_name    = array_shift($path);
+            $request_params   = \veneer\util::request_params();
 
             $endpoint_version = \veneer\util::version('class', $endpoint_version);
             $class = sprintf('\veneer\endpoint\%s\%s', $endpoint_name, $endpoint_version);
 
             if (class_exists($class)) {
                 $instance = new $class;
+                $instance->set_request_params($request_params);
                 $instance->invoke('/'.implode('/', $path), $response);
                 $response->send($endpoint_name, $endpoint_version);
             } else {
-                foreach (\veneer\util::request_params() as $name => $value) {
+                foreach ($request_params as $name => $value) {
                     if ($name == self::get_default('output_handler_param')) {
                         $response->set_output_handler($value);
                     }
