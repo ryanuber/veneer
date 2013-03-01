@@ -7,7 +7,7 @@ class test_serialize_output extends PHPUnit_Framework_TestCase
         $array = array('root_item' => array('sub_item1' => 'value1', 'sub_item2' => 'value2'));
         $this->assertEquals(
             $serialized,
-            \veneer\output\handler\serialize::output_array($array)
+            \veneer\output\handler\serialize::output_arr($array)
         );
     }
 
@@ -17,7 +17,7 @@ class test_serialize_output extends PHPUnit_Framework_TestCase
         $string = 'This is a string';
         $this->assertEquals(
             $serialized,
-            \veneer\output\handler\serialize::output_string($string)
+            \veneer\output\handler\serialize::output_str($string)
         );
     }
 
