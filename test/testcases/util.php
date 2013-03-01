@@ -5,7 +5,7 @@ class test_util extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             'path/to/some/file',
-            \veneer\util::path_join(array('path', 'to', 'some', 'file'))
+            \veneer\util::path_join('path', 'to', 'some', 'file')
         );
     }
 
