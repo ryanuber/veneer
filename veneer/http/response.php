@@ -225,6 +225,25 @@ class response
     }
 
     /**
+     * Examines the request parameters and sets the output handler if one is
+     * found. The request_params array is passed by reference so that if we do
+     * find a parameter matching the output handler type, we set the response
+     * handler, then remove the parameter from request_params so it will not
+     * be further evaluated by API code.
+     *
+     * @param array $request_params  The request parameters array.
+     * @return void
+     */
+    public function handler(array &$request_params)
+    {
+        $parameter = \veneer\app::get_default('output_handler_param');
+        if (array_key_exists($parameter, $request_params)) {
+            self::set_output_handler($request_params[$parameter]);
+            unset($request_params[$parameter]);
+        }
+    }
+
+    /**
      * send - Send the response to the client
      *
      * This function provides a simple way for API callers to print their data
