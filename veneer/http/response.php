@@ -225,62 +225,21 @@ class response
     }
 
     /**
-     * Examine the HTTP request to figure out which output handler to use. In order
-     * of priority, we will first try the Accept header. If no valid handlers are
-     * found, next we try the request parameters. If there is a request parameter
-     * by the same name of the configured output handler parameter, we will use
-     * its value. Failing that, we fall back to the default.
+     * Examines the request parameters and sets the output handler if one is
+     * found. The request_params array is passed by reference so that if we do
+     * find a parameter matching the output handler type, we set the response
+     * handler, then remove the parameter from request_params so it will not
+     * be further evaluated by API code.
+     *
+     * @param array $request_params  The request parameters array.
+     * @return void
      */
-    public function find_output_handler(array &$request_params=array())
+    public function handler(array &$request_params)
     {
-        /**
-         * Check the request headers for an Accept header, and use the first
-         * valid handler found. Otherwise, leave the output handler empty for now.
-         */
-        if (array_key_exists('HTTP_ACCEPT', $_SERVER)) {
-            $parts = explode(',', $_SERVER['HTTP_ACCEPT']);
-            foreach ($parts as $part) {
-                $mime = explode('/', $part);
-                count($mime) == 2 && $part = $mime[1];
-                if (class_exists(sprintf('\veneer\output\handler\%s', $part))) {
-                    $this->set_output_handler($part);
-                    break;
-                }
-            }
-        }
-
-        /**
-         * If no output handler was found in the Accept header, then try the
-         * request parameters.
-         */
-        if (!isset($this->output_handler)) {
-            foreach ($request_params as $name => $value) {
-                if ($name == \veneer\app::get_default('output_handler_param')) {
-                    $class = sprintf('\veneer\output\handler\%s', $value);
-                    if (class_exists($class) && in_array('veneer\output', class_implements($class))) {
-                        $this->set_output_handler($value);
-                        unset($request_params[$name]);
-                    } else {
-                        self::set_output_handler('plain');
-                        self::set('Invalid output handler "'.$value.'"', 415);
-                    }
-                }
-            }
-        }
-
-        /**
-         * If no output handler was set by the calling API (usually if a response
-         * was set before API class invocation), and no valid Accept header was
-         * found, then use the defaults.
-         */
-        if (!isset($this->output_handler)) {
-            $class = sprintf('\veneer\output\handler\%s', \veneer\app::get_default('output_handler'));
-            if (class_exists($class) && in_array('veneer\output', class_implements($class))) {
-                self::set_output_handler(\veneer\app::get_default('output_handler'));
-            } else {
-                self::set_output_handler('plain');
-                self::set('Default output handler not found.', 415);
-            }
+        $parameter = \veneer\app::get_default('output_handler_param');
+        if (array_key_exists($parameter, $request_params)) {
+            self::set_output_handler($request_params[$parameter]);
+            unset($request_params[$parameter]);
         }
     }
 
@@ -294,9 +253,11 @@ class response
      * UPDATE's or INSERT's), and the data will be formatted automatically in
      * your preferred format based on GET and POST variables.
      *
+     * @param string $endpoint_name  The name of the endpoint
+     * @param string $endpoint_version  The version of the endpoint
      * @return void
      */
-    public function send()
+    public function send($endpoint_name='', $endpoint_version='')
     {
         /**
          * Don't cache anything. In the future, perhaps a "max-age" could be
@@ -305,33 +266,46 @@ class response
          */
         self::set_header('Cache-Control: no-cache');
 
+        /**
+         * If no output handler was set by the calling API (usually if a response
+         * was set before API class invocation), then try the query parameters.
+         */
+        if (!isset($this->output_handler) || $this->output_handler == '') {
+            self::set_output_handler(\veneer\app::get_default('output_handler'));
+        }
+
         $class = '\veneer\output\handler\\'.$this->output_handler;
-        if (is_string($this->body) || is_int($this->body)) {
-            if (in_array('veneer\output\str', class_implements($class))) {
-                $output = $class::output_str($this->body);
+        if (class_exists($class) && in_array('veneer\output', class_implements($class))) {
+            if (is_string($this->body) || is_int($this->body)) {
+                if (in_array('veneer\output\str', class_implements($class))) {
+                    $output = $class::output_str($this->body);
+                } else {
+                    self::set('Output handler "'.$this->output_handler.'" cannot handle string data', 500);
+                    self::set_output_handler(null);
+                }
             } else {
-                self::set('Output handler "'.$this->output_handler.'" cannot handle string data', 500);
-                self::set_output_handler(null);
+                if (in_array('veneer\output\arr', class_implements($class))) {
+                    $output = $class::output_arr($this->body);
+                } else {
+                    self::set('Output handler "'.$this->output_handler.'" cannot handle array data', 500);
+                    self::set_output_handler(null);
+                }
+            }
+
+            if (is_null(self::get_output_handler())) {
+                $output = $this->body;
+            }
+
+            /**
+             * Different output handlers probably have different MIME types, and if implemented
+             * correctly, this call should set those headers for this request.
+             */
+            foreach ($class::headers() as $header) {
+                self::set_header($header);
             }
         } else {
-            if (in_array('veneer\output\arr', class_implements($class))) {
-                $output = $class::output_arr($this->body);
-            } else {
-                self::set('Output handler "'.$this->output_handler.'" cannot handle array data', 500);
-                self::set_output_handler(null);
-            }
-        }
-
-        if (is_null(self::get_output_handler())) {
+            self::set('FATAL: No output handlers found for "'.$this->output_handler.'"', 500);
             $output = $this->body;
-        }
-
-        /**
-         * Different output handlers probably have different MIME types, and if implemented
-         * correctly, this call should set those headers for this request.
-         */
-        foreach ($class::headers() as $header) {
-            self::set_header($header);
         }
 
         self::http_status($this->status);

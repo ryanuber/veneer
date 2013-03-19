@@ -339,7 +339,6 @@ class server
         $_SERVER['SERVER_PORT'] = $request['server_port'];
         $_SERVER['REMOTE_ADDR'] = $request['remote_addr'];
         $_SERVER['REMOTE_PORT'] = $request['remote_port'];
-        array_key_exists('accept', $request['headers']) && $_SERVER['HTTP_ACCEPT'] = $request['headers']['accept'];
         return true;
     }
 
