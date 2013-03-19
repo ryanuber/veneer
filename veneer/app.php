@@ -92,20 +92,21 @@ class app
             $endpoint_version = \veneer\util::version('class', $endpoint_version);
             $class = sprintf('\veneer\endpoint\%s\%s', $endpoint_name, $endpoint_version);
 
-            $response->handler($request_params);
-            if (class_exists($class)) {
-                $instance = new $class;
-                $instance->set_request_params($request_params);
-                $instance->invoke('/'.implode('/', $path), $response);
-                $response->send($endpoint_name, $endpoint_version);
-            } else {
-                $return = array(
-                    'error' => 'No such endpoint',
-                    'endpoints' => \veneer\util::get_endpoints()
-                );
-                $response->set($return, 404);
-                $response->send();
+            $response->find_output_handler($request_params);
+            if (!$response->is_set()) {
+                if (class_exists($class)) {
+                    $instance = new $class;
+                    $instance->set_request_params($request_params);
+                    $instance->invoke('/'.implode('/', $path), $response);
+                } else {
+                    $return = array(
+                        'error' => 'No such endpoint',
+                        'endpoints' => \veneer\util::get_endpoints()
+                    );
+                    $response->set($return, 404);
+                }
             }
+            $response->send();
         } catch (\Exception $e) {
             print $e->getMessage();
         }
