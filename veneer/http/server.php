@@ -112,6 +112,7 @@ class server
         self::discover_endpoints();
         self::set_bind_addr($bind_addr);
         self::set_bind_port($bind_port);
+        self::reset();
 
         if (($this->socket = socket_create(AF_INET, SOCK_STREAM, 0)) === false) {
             throw new \veneer\exception\socket('Failed while creating new socket');
@@ -339,6 +340,10 @@ class server
         $_SERVER['SERVER_PORT'] = $request['server_port'];
         $_SERVER['REMOTE_ADDR'] = $request['remote_addr'];
         $_SERVER['REMOTE_PORT'] = $request['remote_port'];
+        foreach ($request['headers'] as $key => $val) {
+            $index = \veneer\util::header_to_index($key);
+            $_SERVER[$index] = $val;
+        }
         return true;
     }
 
@@ -354,30 +359,21 @@ class server
     public function reset()
     {
         global $_SERVER;
-        foreach (array(
-            'REQUEST_METHOD',
-            'REQUEST_URI',
-            'SERVER_PROTOCOL',
-            'HTTP_HOST',
-            'SERVER_PORT',
-            'REMOTE_ADDR',
-            'REMOTE_PORT') as $index) {
-            if (array_key_exists($index, $_SERVER)) {
-                unset($_SERVER[$index]);
-            }
+        foreach (array_keys($_SERVER) as $index) {
+            unset($_SERVER[$index]);
         }
 
         global $_GET;
         if (isset($_GET)) {
-            foreach ($_GET as $k => $v) {
-                unset($_GET[$k]);
+            foreach (array_keys($_GET) as $index) {
+                unset($_GET[$index]);
             }
         }
 
         global $_POST;
         if (isset($_POST)) {
-            foreach ($_POST as $k => $v) {
-                unset($_POST[$k]);
+            foreach (array_keys($_POST) as $index) {
+                unset($_POST[$index]);
             }
         }
     }

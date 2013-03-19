@@ -210,6 +210,18 @@ class util
         }
         return $docs;
     }
+
+    /**
+     * Convert a header name to a suitably-matching _SERVER index name, as typically
+     * set by PHP. This is simple string manipulation.
+     *
+     * @param string $name  The header name to convert
+     * @return string
+     */
+    public static function header_to_index($name)
+    {
+        return 'HTTP_'.strtoupper(str_replace('-', '_', $name));
+    }
 }
 
 /* EOF */

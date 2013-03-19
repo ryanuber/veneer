@@ -267,6 +267,19 @@ The following will change the default parameter name to "output_type":
 
 You can specify the same inside of your route definitions.
 
+You can also pass output types using an HTTP header by the same name of your output handler
+parameter, like this:
+
+    $ curl -s -H 'format: application/json' http://localhost:8080
+
+With these two different methods of specifying an output handler, internally veneer will use
+the following priority to determine how to send output back to you:
+
+* An HTTP header by the same name of the route's handler parameter (default: `format`)
+* The output handler parameter for the route (default: `format`)
+* The default output handler for the route (default: `json`)
+* text/plain, an error message, and a `415 Unsupported Media Type` response.
+
 There are constraints around output handlers, specifically what types of data can be handled.
 There are 2 main types that any outputter might support: string and array. Any handler that can
 handle array and string data would satisfy both of these. However, there might be some

@@ -114,21 +114,19 @@ abstract class call
         $data = null;
         $params = array();
         $router->select_route($method, $data, $params);
+
         if (is_array($data) && array_key_exists('output_handler_param', $data)) {
-            $output_handler_param = $data['output_handler_param'];
+            $handler_param = $data['output_handler_param'];
         } else {
-            $output_handler_param = \veneer\app::get_default('output_handler_param');
-        }
-        foreach ($this->request_params as $name => $value) {
-            if ($name == $output_handler_param) {
-                $this->response->set_output_handler($value);
-            }
+            $handler_param = \veneer\app::get_default('output_handler_param');
         }
         if (is_array($data) && array_key_exists('output_handler', $data)) {
-            if ($this->response->get_output_handler() == null) {
-                $this->response->set_output_handler($data['output_handler']);
-            }
+            $default_handler = $data['output_handler'];
+        } else {
+            $default_handler = \veneer\app::get_default('output_handler');
         }
+        $this->response->configure_handler($handler_param, $default_handler, $this->request_params);
+
         $params = array_merge($this->request_params, $params);
         if ($fn = self::validate($data, $params)) {
             if (method_exists($this, $fn)) {
