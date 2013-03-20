@@ -270,7 +270,7 @@ You can specify the same inside of your route definitions.
 You can also pass output types using an HTTP header by the same name of your output handler
 parameter, like this:
 
-    $ curl -s -H 'format: application/json' http://localhost:8080
+    $ curl -s -H 'format: json' http://localhost:8080
 
 With these two different methods of specifying an output handler, internally veneer will use
 the following priority to determine how to send output back to you:
