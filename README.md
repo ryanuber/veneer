@@ -58,10 +58,24 @@ is the parameter name. Other built-in handlers include `serialize`,
 Take a look in `veneer/output/handler/*` for some examples.
 
 ### How can I use this under Apache, Nginx, Lighttpd, or web server x?
-.htaccess file or web server config
+Rewrite all requests to your `run.php` file (or whatever you called it)
+
+Apache
 ```
 RewriteEngine On
 RewriteRule ^(.*)$ run.php [QSA]
+```
+
+Nginx
+```
+rewrite ^ run.php?$args? ;
+```
+
+lighttpd
+```
+url.rewrite = (
+  "^(.*)$" => "run.php$1"
+)
 ```
 
 run.php file
