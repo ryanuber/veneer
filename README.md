@@ -50,7 +50,10 @@ $ curl -H 'format: json' http://localhost:8080/v1/hello/world
 ```
 The default serialization type is json, but you can configure that by
 calling `\veneer\app::set_default('output_handler', 'xyz')`, where `xyz`
-is any other output handler. Other built-in handlers include `serialize`,
+is any other output handler. You can also change the parameter that
+indicates the output handler by calling
+`\veneer\app::set_default('output_handler_param', 'xyz')`, where `xyz`
+is the parameter name. Other built-in handlers include `serialize`,
 `plain`, and `html`. You can easily add to the available output handlers.
 Take a look in `veneer/output/handler/*` for some examples.
 
