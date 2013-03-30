@@ -1,4 +1,4 @@
-![""](http://ryanuber.github.com/veneer/veneer.png "")
+![""](http://ryanuber.github.com/assets/projects/veneer.png "")
 
 [![Build Status](https://travis-ci.org/ryanuber/veneer.png)](https://travis-ci.org/ryanuber/veneer)
 
