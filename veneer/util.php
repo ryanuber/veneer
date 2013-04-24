@@ -148,6 +148,10 @@ class util
                 }
                 break;
         }
+        if (array_key_exists('QUERY_STRING', $_SERVER)) {
+            parse_str($_SERVER['QUERY_STRING'], $query_string_params);
+            $result = array_replace($query_string_params, $result);
+        }
         if (!is_null($param)) {
             return array_key_exists($param, $result) ? $result[$param] : '';
         } else {
