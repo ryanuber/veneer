@@ -101,10 +101,10 @@ class app
                 $handler_param = self::get_default('output_handler_param');
                 $default_handler = self::get_default('output_handler');
                 $response->configure_handler($handler_param, $default_handler, $request_params);
-                if (is_callable(self::get_default('root_function'))) {
-                    $return = call_user_func(self::get_default('root_function'));
+                if (is_callable(self::get_default('no_endpoint_handler'))) {
+                    $return = call_user_func(self::get_default('no_endpoint_handler'));
                 } else {
-                    $return = self::default_root();
+                    $return = self::no_endpoint();
                 }
                 $response->set($return, 404);
             }
