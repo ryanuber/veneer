@@ -102,11 +102,10 @@ class app
                 $default_handler = self::get_default('output_handler');
                 $response->configure_handler($handler_param, $default_handler, $request_params);
                 if (is_callable(self::get_default('no_endpoint_handler'))) {
-                    $return = call_user_func(self::get_default('no_endpoint_handler'));
+                    call_user_func(self::get_default('no_endpoint_handler'), $response);
                 } else {
-                    $return = self::no_endpoint();
+                    self::no_endpoint($response);
                 }
-                $response->set($return, 404);
             }
             $response->send();
         } catch (\Exception $e) {
@@ -114,12 +113,13 @@ class app
         }
     }
 
-    public static function no_endpoint()
+    public static function no_endpoint($response)
     {
-        return array(
+        $response->set_status(404);
+        $response->set_body(array(
             'error' => 'No such endpoint',
             'endpoints' => \veneer\util::get_endpoints()
-        );
+        ));
     }
 
     /**
