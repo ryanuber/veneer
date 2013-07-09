@@ -47,7 +47,8 @@ class app
      */
     private static $defaults = array(
         'output_handler' => 'json',
-        'output_handler_param' => 'format'
+        'output_handler_param' => 'format',
+        'no_endpoint_handler' => '\veneer\app::no_endpoint'
     );
 
     /**
@@ -100,16 +101,25 @@ class app
                 $handler_param = self::get_default('output_handler_param');
                 $default_handler = self::get_default('output_handler');
                 $response->configure_handler($handler_param, $default_handler, $request_params);
-                $return = array(
-                    'error' => 'No such endpoint',
-                    'endpoints' => \veneer\util::get_endpoints()
-                );
+                if (is_callable(self::get_default('root_function'))) {
+                    $return = call_user_func(self::get_default('root_function'));
+                } else {
+                    $return = self::default_root();
+                }
                 $response->set($return, 404);
             }
             $response->send();
         } catch (\Exception $e) {
             print $e->getMessage();
         }
+    }
+
+    public static function no_endpoint()
+    {
+        return array(
+            'error' => 'No such endpoint',
+            'endpoints' => \veneer\util::get_endpoints()
+        );
     }
 
     /**
