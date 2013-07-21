@@ -1,36 +1,53 @@
-%define prefix /usr/share/php
+%define php_includedir %{_datadir}/php
+%define unpacked %(%{__tar} -tzf %{SOURCE0} | %{__grep} -E '^(\./)?%{name}(-[^/]+)?/$')
+
 name: veneer
 summary: An Experimental API Framework for PHP
-version: 0.20
+version: 0.3
 release: 1%{?dist}
 buildarch: noarch
 license: MIT
 source0: %{name}.tar.gz
 requires: php
+
 %description
+A small, basic API framework written in PHP that has no dependencies other than PHP itself.
+It doesn't focus on complex routing, appealing syntax, or making the 'hello world' example
+as small as possible, but some basic features include mandatory versioning, route matching,
+patterns, and splats, modular output handler layer, input validation, it also includes an
+optional stand-alone HTTP server implemented using sockets.
+
+This framework does not aim to be perfect or satisfy every use case imagineable. So why
+would anyone want to use it? The veneer framework focuses on versioning, documentation,
+validation, and ease of development.
+
 %prep
-%setup -n %{name}
+%setup -n %{unpacked}
+
 %install
-%{__mkdir_p} %{buildroot}/%{prefix}/%{name}/{output/handler,exception,http,prototype}
-%{__cp} %{name}/*.php %{buildroot}/%{prefix}/%{name}
-%{__cp} %{name}/output/*.php %{buildroot}/%{prefix}/%{name}/output
-%{__cp} %{name}/output/handler/*.php %{buildroot}/%{prefix}/%{name}/output/handler
-%{__cp} %{name}/exception/*.php %{buildroot}/%{prefix}/%{name}/exception
-%{__cp} %{name}/http/*.php %{buildroot}/%{prefix}/%{name}/http
+%{__mkdir_p} %{buildroot}/%{php_includedir}/%{name}/{output/handler,exception,http,prototype}
+%{__cp} %{name}/*.php %{buildroot}/%{php_includedir}/%{name}
+%{__cp} %{name}/output/*.php %{buildroot}/%{php_includedir}/%{name}/output
+%{__cp} %{name}/output/handler/*.php %{buildroot}/%{php_includedir}/%{name}/output/handler
+%{__cp} %{name}/exception/*.php %{buildroot}/%{php_includedir}/%{name}/exception
+%{__cp} %{name}/http/*.php %{buildroot}/%{php_includedir}/%{name}/http
+
 %clean
-rm -rf %{buildroot}
+%{__rm} -rf %{buildroot}
+
 %files
 %defattr(0644,root,root,0755)
-%dir %{prefix}/%{name}
-%{prefix}/%{name}/*.php
-%dir %{prefix}/%{name}/output
-%{prefix}/%{name}/output/*.php
-%dir %{prefix}/%{name}/output/handler
-%{prefix}/%{name}/output/handler/*.php
-%dir %{prefix}/%{name}/exception
-%{prefix}/%{name}/exception/*.php
-%dir %{prefix}/%{name}/http
-%{prefix}/%{name}/http/*.php
+%dir %{php_includedir}/%{name}
+%{php_includedir}/%{name}/*.php
+%dir %{php_includedir}/%{name}/output
+%{php_includedir}/%{name}/output/*.php
+%dir %{php_includedir}/%{name}/output/handler
+%{php_includedir}/%{name}/output/handler/*.php
+%dir %{php_includedir}/%{name}/exception
+%{php_includedir}/%{name}/exception/*.php
+%dir %{php_includedir}/%{name}/http
+%{php_includedir}/%{name}/http/*.php
+
 %changelog
-* %(date "+%a %b %d %Y") veneer - %{version}-%{release}
+* %(date "+%a %b %d %Y") %{name} - %{version}-%{release}
 - Automatic build

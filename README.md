@@ -91,3 +91,17 @@ require 'hello.php';
 ### What about some more advanced features?
 This readme is kept to a minimum. You can read about some more advanced
 functionality by reading the [wiki](https://github.com/ryanuber/veneer/wiki/_pages)
+
+### Build it into an RPM
+If you use a RedHat-based distribution, you can easily build a shared
+installation of veneer into an RPM by following these steps:
+
+1. Download a release and name the archive `veneer.tar.gz`:
+```
+curl -o veneer.tar.gz https://github.com/ryanuber/veneer/archive/master.tar.gz
+```
+
+2. Build it with `rpmbuild`:
+```
+rpmbuild -tb veneer.tar.gz
+```
